@@ -15,6 +15,8 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../reducers/auth.slice.js";
 import axios from "../utils/axios.js"
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 const theme = createTheme();
 
@@ -24,6 +26,8 @@ export default function SignIn() {
     const dispatch = useDispatch()
     const from = location.state?.from?.pathname || "/";
     const user = useSelector(state => state.auth.value)
+
+    const mySwal = withReactContent(Swal)
 
     if (user !== null) {
         return (
@@ -54,6 +58,12 @@ export default function SignIn() {
             })
             .catch((error) => {
                 console.log(error);
+                mySwal.fire({
+                    icon: 'error',
+                    title: 'Failed to login',
+                    text: error.response.data,
+                    confirmButtonText: 'Try again'
+                })
             });
 
         navigate(from, {replace: true});

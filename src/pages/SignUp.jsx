@@ -10,24 +10,75 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import axios from "../utils/axios.js";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import {Autocomplete} from "@mui/material";
+import {useState} from "react";
 
 const theme = createTheme();
 
+const top100Films = [
+    {title: 'The Shawshank Redemption', year: 1994},
+    {title: 'The Godfather', year: 1972},
+]
+
+
 export default function SignUp() {
     const user = useSelector(state => state.auth.value)
+    const navigate = useNavigate();
+    const [headquarters, setHeadquarters] = useState([]);
+
+    const mySwal = withReactContent(Swal)
+
     if (user !== null) {
         return (
             <Navigate to={"/home"}/>
         )
     }
+
+    const handleHeadquartersSelection = (e)=>{
+        setHeadquarters(e.currentTarget)
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
+
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                "firstname": data.get('firstName'),
+                "lastname": data.get('lastName'),
+                "email": data.get('email'),
+                "password": data.get('password'),
+                "headquarters": headquarters
+            }),
+            method: "post",
+            url: "/users"
+        }
+
+        axios.request(config)
+            .then(() => {
+                mySwal.fire({
+                    icon: 'success',
+                    title: 'User created correctly',
+                    confirmButtonText: 'OK'
+                })
+                navigate("/signin")
+            })
+            .catch((error) => {
+                mySwal.fire({
+                    icon: 'error',
+                    title: 'Failed to register',
+                    text: error.response.data,
+                    confirmButtonText: 'Try again'
+                })
+            });
+
     };
 
     return (
@@ -95,6 +146,24 @@ export default function SignUp() {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    multiple
+                                    id="headquarters"
+                                    options={top100Films}
+                                    getOptionLabel={(option) => option.title}
+                                    onChange={handleHeadquartersSelection}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            id="headquartersTF"
+                                            label="Headquarters"
+                                            placeholder="Pick up the headquarters you belong to"
+                                        />
+                                    )}
                                 />
                             </Grid>
                         </Grid>

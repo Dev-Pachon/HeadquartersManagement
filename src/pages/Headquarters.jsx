@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import UserService from "../services/user.service";
 import { useSelector } from "react-redux";
-import UsersEdit from "../components/UsersEdit";
 import {
   Table,
   TableCell,
@@ -14,17 +12,19 @@ import {
   Box,
   Modal,
   TextField,
-  Button,
+  Button, Icon,
 } from "@mui/material";
 import {
   Add,
   ArrowRightRounded,
   DeleteOutline,
-  Edit,
+  Edit, Preview,
   Search,
 } from "@mui/icons-material";
 import HeadquarterService from "../services/headquarter.service";
-import HeadquarterEdit from "./HeadquarterEdit";
+import HeadquarterEdit from "../components/HeadquarterEdit.jsx";
+import HeadquarterCreate from "../components/HeadquarterCreate.jsx";
+import {Link} from "react-router-dom";
 
 const modalStyle = {
   position: "absolute",
@@ -51,15 +51,24 @@ function createData({ _id, name, contact, location, createdAt, updatedAt }) {
 
 export default function Headquarters() {
   const user = useSelector((state) => state.auth.value);
-  const [userEdited, setUserEdited] = useState({
-    firstname: "",
-    lastname: "",
+  const [headquarterEdited, setHeadquarterEdited] = useState({
+    name: "",
+    contact: {
+        name: "",
+    phone: "",
     email: "",
+    },
+    location: {
+      city: "",
+      address: "",
+      zipcode: ""
+    }
   });
   const [filtered, setFiltered] = useState("");
   const [search, setSearch] = useState("");
   const [searchModal, setSearchModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [createModal, setCreateModal] = useState(false);
 
   const [rows, setRows] = useState([]);
 
@@ -98,7 +107,7 @@ export default function Headquarters() {
 
   const handleUpdate = ({ row }) => {
     setUpdateModal(true);
-    setUserEdited(row);
+    setHeadquarterEdited(row);
   };
 
   const handleDelete = (id) => {
@@ -155,6 +164,9 @@ export default function Headquarters() {
                 <IconButton onClick={() => handleDelete(row._id)}>
                   <DeleteOutline color="error" />
                 </IconButton>
+                <IconButton to={"/headquarters/"+row._id} component={Link}>
+                  <Preview/>
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
@@ -172,7 +184,7 @@ export default function Headquarters() {
         <Fab
           color="primary"
           aria-label="add"
-          onClick={() => setSearchModal(true)}
+          onClick={() => setCreateModal(true)}
         >
           <Add />
         </Fab>
@@ -209,11 +221,16 @@ export default function Headquarters() {
         </Box>
       </Modal>
       <HeadquarterEdit
-        user={userEdited}
-        setUser={setUserEdited}
+        headquarter={headquarterEdited}
+        setHeadquarter={setHeadquarterEdited}
         modalClose={() => setUpdateModal(false)}
         modalOpen={updateModal}
         handleReload={handleReload}
+      />
+      <HeadquarterCreate
+          modalClose={() => setCreateModal(false)}
+          modalOpen={createModal}
+          handleReload={handleReload}
       />
     </>
   );

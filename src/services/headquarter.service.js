@@ -47,8 +47,8 @@ const remove = (id, token) => {
     return axios.delete(URL, config)
 }
 
-const findByName = (firstname, token) => {
-    const URL = HEADQUARTERS+"?firstname="+firstname
+const findByName = (name, token) => {
+    const URL = HEADQUARTERS+"?name="+name
     const config = {
         headers:{
             "Authorization": AUTH_HEADER+token

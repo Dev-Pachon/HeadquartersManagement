@@ -10,11 +10,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Autocomplete } from "@mui/material";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import UserService from "../services/user.service.js";
 import HeadquarterService from "../services/headquarter.service.js";
 
@@ -25,13 +25,18 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [headquarters, setHeadquarters] = useState([]);
   const [headquartersOptions, setHeadquartersOptions] = useState([])
-
-  const mySwal = withReactContent(Swal);
+  useEffect(() => {
+    HeadquarterService.getAll().then((res)=>{
+      console.log(res)
+      setHeadquartersOptions(res.data)
+    })
+  }, []);
 
   if (user !== null) {
     return <Navigate to={"/home"} />;
   }
 
+  const mySwal = withReactContent(Swal);
   const handleHeadquartersSelection = (value) => {
     setHeadquarters(value)
   };
@@ -71,13 +76,6 @@ export default function SignUp() {
         });
       });
   };
-
-  React.useEffect(() => {
-    HeadquarterService.getAll().then((res)=>{
-        console.log(res)
-        setHeadquartersOptions(res.data)
-    })
-  }, []);
 
   return (
     <ThemeProvider theme={theme}>

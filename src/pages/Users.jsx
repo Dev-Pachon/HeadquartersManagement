@@ -35,7 +35,7 @@ const modalStyle = {
   p: 4,
 };
 
-function createData({ _id, firstname, lastname, email, createdAt, updatedAt }) {
+export function createData({ _id, firstname, lastname, email, createdAt, updatedAt }) {
   return {
     _id,
     firstname,
@@ -49,9 +49,7 @@ function createData({ _id, firstname, lastname, email, createdAt, updatedAt }) {
 export default function Users() {
   const user = useSelector((state) => state.auth.value);
   const [userEdited, setUserEdited] = useState({
-    firstname: "",
-    lastname:"",
-    email:""
+
   });
   const [filtered, setFiltered] = useState("");
   const [search, setSearch] = useState("");

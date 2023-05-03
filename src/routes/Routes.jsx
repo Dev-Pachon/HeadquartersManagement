@@ -13,8 +13,6 @@ import HeadquarterCreate from "../pages/HeadquarterCreate";
 import HeadquarterEdit from "../pages/HeadquarterEdit";
 import HeadquarterDetails from "../pages/HeadquarterDetails";
 import Users from "../pages/Users";
-import UsersCreate from "../pages/UsersCreate";
-import UsersEdit from "../pages/UsersEdit";
 import RequireAuth from "../components/RequireAuth";
 
 export default function Routes() {
@@ -75,22 +73,6 @@ export default function Routes() {
           element: (
             <RequireAuth>
               <Users />
-            </RequireAuth>
-          ),
-        },
-        {
-          path: "/users/add",
-          element: (
-            <RequireAuth>
-              <UsersCreate />,
-            </RequireAuth>
-          ),
-        },
-        {
-          path: "/users/edit",
-          element: (
-            <RequireAuth>
-              <UsersEdit />,
             </RequireAuth>
           ),
         },
